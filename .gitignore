@@ -141,3 +141,4 @@ cython_debug/
 *.kml
 *.gpx
 *.geojson
+.vscode/settings.json

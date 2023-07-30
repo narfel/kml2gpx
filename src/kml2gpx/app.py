@@ -5,7 +5,9 @@ from datetime import datetime, timedelta
 from typing import List, TextIO
 
 
-def write_gpx_data(output: TextIO, output_file: str, coordinates: List[str]) -> None:
+def write_gpx_data(
+    output: TextIO, output_file: str, coordinates: List[str], date_string: str
+) -> None:
     """
     Write GPX data to the output file.
 
@@ -24,8 +26,13 @@ def write_gpx_data(output: TextIO, output_file: str, coordinates: List[str]) -> 
         f"\r\n<trk>\r\n <name>{output_file}</name>\r\n <trkseg>\r\n",
     ]
 
-    # Add time information based on the current time
-    today = datetime.now()
+    # # Add time information based on the current time or date argument
+    if len(sys.argv) > 2:
+        date_string = sys.argv[2]
+        today = datetime.strptime(date_string, "%Y-%m-%d")
+        print(today)
+    else:
+        today = datetime.now()
     second = timedelta(seconds=1)
 
     # Iterate over the coordinates and reverse lat/lon
@@ -58,16 +65,15 @@ def get_coords(input_file: str) -> str:
         PermissionError: If the input_file cannot be opened.
     """
     try:
-        with open(input_file, encoding="utf8") as f:
-            file_contents = f.read()
+        with open(input_file, encoding="utf8") as file_handle:
+            file_contents = file_handle.read()
             match = re.search(
                 "<LineString>.*?<coordinates>(.*?)</coordinates>",
                 file_contents,
                 re.DOTALL,
             )
             if match:
-                coord_str = match[1].strip()
-                return coord_str
+                return match[1].strip()
             print("No coordinates found in KML file")
             sys.exit()
     except (FileNotFoundError, PermissionError) as exc:
@@ -79,11 +85,11 @@ def main() -> None:
     """
     Convert KML file containing a path to GPX. If multiple paths are present the first one is used.
 
-    Usage: python app.py [input_file.kml]
+    Usage: kml2gpx input_file.kml [YYYY-MM-DD]]
     """
-    if len(sys.argv) != 2:
+    if len(sys.argv) < 2:
         print("Convert kml to gpx")
-        print("Usage: python app.py [input_file.kml]")
+        print("Usage: kml2gpx input_file.kml [YYYY-MM-DD]]")
         sys.exit()
 
     input_file = sys.argv[1]
@@ -96,7 +102,8 @@ def main() -> None:
     del coord_str[-1]
 
     with open(output_file, "w", encoding="utf8") as output:
-        write_gpx_data(output, output_file, coord_str)
+        date_string = sys.argv[2] if len(sys.argv) > 2 else None
+        write_gpx_data(output, output_file, coord_str, date_string)
 
     print(f"Gpx track with {len(coord_str)} points exported to {output_file}")
 
