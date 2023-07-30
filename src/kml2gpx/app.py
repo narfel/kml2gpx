@@ -85,11 +85,11 @@ def main() -> None:
     """
     Convert KML file containing a path to GPX. If multiple paths are present the first one is used.
 
-    Usage: kml2gpx input_file.kml [YYYY-MM-DD]]
+    Usage: kml2gpx input_file.kml [YYYY-MM-DD]
     """
     if len(sys.argv) < 2:
         print("Convert kml to gpx")
-        print("Usage: kml2gpx input_file.kml [YYYY-MM-DD]]")
+        print("Usage: kml2gpx input_file.kml [YYYY-MM-DD]")
         sys.exit()
 
     input_file = sys.argv[1]

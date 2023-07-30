@@ -23,7 +23,7 @@ None
 ## How to use
 
 ```sh
-kml2gpx [input_file.kml]
+kml2gpx input_file.kml [YYYY-MM-DD]
 ```
 
 ### Windows
