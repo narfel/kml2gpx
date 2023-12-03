@@ -2,11 +2,11 @@
 import re
 import sys
 from datetime import datetime, timedelta
-from typing import List, TextIO
+from typing import List, Optional, TextIO
 
 
 def write_gpx_data(
-    output: TextIO, output_file: str, coordinates: List[str], date_string: str
+    output: TextIO, output_file: str, coordinates: List[str], date_string: Optional[str] = None
 ) -> None:
     """
     Write GPX data to the output file.
@@ -98,15 +98,15 @@ def main() -> None:
     coord_str = get_coords(input_file)
 
     # split into tuples
-    coord_str = coord_str.lstrip("\t").split(" ")
-    del coord_str[-1]
+    coord_list = coord_str.lstrip("\t").split(" ")
+    if coord_list[-1] == '':
+        del coord_list[-1]
 
     with open(output_file, "w", encoding="utf8") as output:
         date_string = sys.argv[2] if len(sys.argv) > 2 else None
-        write_gpx_data(output, output_file, coord_str, date_string)
+        write_gpx_data(output, output_file, coord_list, date_string)
 
-    print(f"Gpx track with {len(coord_str)} points exported to {output_file}")
-
+    print(f"Gpx track with {len(coord_list)} points exported to {output_file}")
 
 if __name__ == "__main__":
     main()
