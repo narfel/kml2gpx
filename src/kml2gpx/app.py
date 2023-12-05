@@ -6,7 +6,10 @@ from typing import List, Optional, TextIO
 
 
 def write_gpx_data(
-    output: TextIO, output_file: str, coordinates: List[str], date_string: Optional[str] = None
+    output: TextIO,
+    output_file: str,
+    coordinates: List[str],
+    date_string: Optional[str] = None,
 ) -> None:
     """
     Write GPX data to the output file.
@@ -36,15 +39,16 @@ def write_gpx_data(
     second = timedelta(seconds=1)
 
     # Iterate over the coordinates and reverse lat/lon
-    for element in coordinates:
-        lat, lon, ele = element.split(",")
-        lines.extend(
-            (
-                f'  <trkpt lat="{lon}" lon="{lat}"><ele>{ele}</ele>',
-                f"<time>{today.replace(microsecond=0).isoformat()}Z</time></trkpt>\r\n",
+    for line in coordinates:
+        if line.strip():
+            lat, lon, ele = line.split(",")
+            lines.extend(
+                (
+                    f'  <trkpt lat="{lon}" lon="{lat}"><ele>{ele}</ele>',
+                    f"<time>{today.replace(microsecond=0).isoformat()}Z</time></trkpt>\r\n",
+                )
             )
-        )
-        today += second
+            today += second
 
     lines.append(" </trkseg>\r\n</trk>\r\n\r\n</gpx>\r\n")
     output.writelines(lines)
@@ -99,7 +103,7 @@ def main() -> None:
 
     # split into tuples
     coord_list = coord_str.lstrip("\t").split(" ")
-    if coord_list[-1] == '':
+    if coord_list[-1] == "":
         del coord_list[-1]
 
     with open(output_file, "w", encoding="utf8") as output:
@@ -107,6 +111,7 @@ def main() -> None:
         write_gpx_data(output, output_file, coord_list, date_string)
 
     print(f"Gpx track with {len(coord_list)} points exported to {output_file}")
+
 
 if __name__ == "__main__":
     main()

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Placemark>
+    <name>Test file</name>
+    <LineString>
+      <extrude>1</extrude>
+      <tessellate>1</tessellate>
+      <coordinates>
+        0,-89,0
+        90,-89,0
+        180,-89,0
+        -90,-89,0
+        0,-89,0
+      </coordinates>
+    </LineString>
+  </Placemark>
+</kml>
